@@ -4,6 +4,7 @@ import './with.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import './config';
 import { App } from './App';
 import { useUpdateStore } from './features/updates/useUpdatesStore';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';

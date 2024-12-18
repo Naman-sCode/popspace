@@ -11,6 +11,8 @@ import { MeetingSelect } from './pages/MeetingSelect/MeetingSelect';
 import { PostMeeting } from './pages/PostMeeting/PostMeeting';
 import { PromoSlugPage } from './pages/PromoSlugPage';
 import RoomPage from './pages/RoomPage/RoomPage';
+import SignUpPage from './pages/SingUpPage/SignUpPage';
+import LoginPage from './pages/LoginPage/LoginPage';
 
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
@@ -20,8 +22,11 @@ export const Routes: React.FC<IRoutesProps> = () => {
   return (
     <Switch>
       <Route exact path={RouteNames.ROOT}>
-        <Redirect to="/create" />
+        <Redirect to={RouteNames.SIGN_IN} />
       </Route>
+      <Route exact path={RouteNames.SIGN_IN} component={LoginPage} />
+      <Route exact path={RouteNames.SIGN_UP} component={SignUpPage} />
+
       <Route exact path={RouteNames.CREATE_MEETING} component={MeetingSelect} />
 
       <Route exact path={RouteNames.MEETING_LINK} component={MeetingLink} />
