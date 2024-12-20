@@ -5,23 +5,18 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
-  Button,
-  Box
+  InputLabel
 } from "@material-ui/core";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Task, User } from "../../models/models";
 import TodoList from "./TodoList";
 import axios from "axios";
 import { makeStyles } from '@material-ui/core/styles';
-import AddUserModal from "./AddUserModal";
-import { AiOutlineUserAdd } from "react-icons/ai";
-import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   filterContainer: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: theme.spacing(2),
   },
@@ -30,43 +25,10 @@ const useStyles = makeStyles((theme) => ({
   },
   listContainer: {
      marginTop: theme.spacing(2)
-  },
-  buttonContainer: {
-    display: 'flex',
-    gap: theme.spacing(1), // Space between buttons
-    alignItems: 'center', // Align buttons vertically
-  },
-  createMeetingButton: {
-    display: 'inline-flex',      
-    alignItems: 'center',         
-    justifyContent: 'center',     
-    padding: theme.spacing(1, 2), 
-    backgroundColor: '#000',      
-    color: '#fff',                
-    borderRadius: theme.spacing(1), 
-    cursor: 'pointer',
-    maxWidth: 'fit-content',      
-    minWidth: 'auto', 
-  },
-  addUserButton: { 
-    display: 'inline-flex',      
-    alignItems: 'center',         
-    justifyContent: 'center',     
-    padding: theme.spacing(1, 2), 
-    backgroundColor: '#000',      
-    color: '#fff',                
-    borderRadius: theme.spacing(1), 
-    cursor: 'pointer',
-    maxWidth: 'fit-content',      
-    minWidth: 'auto',             
-  },
-  addUserButtonText:{
-     marginLeft: theme.spacing(1)
   }
-
 }));
 
-const AdminKanban: React.FC = () => {
+const KanbanBoard: React.FC = () => {
   const classes = useStyles();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [doing, setDoing] = useState<Task[]>([]);
@@ -74,7 +36,7 @@ const AdminKanban: React.FC = () => {
   const [filter, setFilter] = useState<string>('All');
   const [ownersMenu, setOwnersMenu] = useState<string[]>([]);
    const [ownerList, setOwnerList] = useState<string[]>([]);
-  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+
 
    const updateOwners = useCallback((newTasks: Task[] | Task) => {
     const tasksToAdd = Array.isArray(newTasks) ? newTasks : [newTasks];
@@ -90,7 +52,6 @@ const AdminKanban: React.FC = () => {
     setOwnersMenu(uniqueOwners);
   }, [tasks, doing, complete]);
 
-  const history = useHistory();
   useEffect(() => {
     let isMounted = true;
     axios.get('http://localhost:5555/')
@@ -172,56 +133,30 @@ const AdminKanban: React.FC = () => {
       : todoList.filter(todo => todo.owner === filter);
   }, [filter]);
 
-  const navigateToCreate = () => {
-    history.push('/create'); 
-  };
-
-  const handleAddUserModalOpen = useCallback(() => {
-    setIsAddUserModalOpen(true);
-  }, []);
-
-  const handleAddUserModalClose = useCallback(() => {
-    setIsAddUserModalOpen(false);
-  }, []);
-
-   const updateUserList = useCallback((newUser:User)=>{
-      setOwnerList(prev => [...prev, newUser.name]);
-  }, [setOwnerList])
-
-
   const owners: string[] = ['All', ...ownersMenu];
 
   return (
     <Container>
-      <Box className={classes.filterContainer}>
-          <FormControl variant="outlined" className={classes.filterSelect}>
-            <InputLabel htmlFor="owner-filter">Filter By Owner</InputLabel>
-            <Select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value as string)}
-              inputProps={{
-                name: 'owner',
-                id: 'owner-filter',
-              }}
-              label="Filter By Owner"
-            >
-              {owners.map(owner => (
-                <MenuItem key={owner} value={owner}>
-                  {owner}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <div className={classes.buttonContainer}>
-        <Button onClick={navigateToCreate} className={classes.createMeetingButton}> Create Meeting</Button>
-        <Button onClick={handleAddUserModalOpen} className={classes.addUserButton}>
-           <AiOutlineUserAdd/>
-            <span className={classes.addUserButtonText}>
-              Add User
-            </span>
-        </Button>
-        </div>
-      </Box>
+      <div className={classes.filterContainer}>
+       <FormControl variant="outlined" className={classes.filterSelect}>
+          <InputLabel htmlFor="owner-filter">Filter By Owner</InputLabel>
+          <Select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value as string)}
+            inputProps={{
+              name: 'owner',
+              id: 'owner-filter',
+            }}
+            label="Filter By Owner"
+          >
+            {owners.map(owner => (
+              <MenuItem key={owner} value={owner}>
+                {owner}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
         <Grid container spacing={3} className={classes.listContainer}>
@@ -232,7 +167,7 @@ const AdminKanban: React.FC = () => {
             owners={ownerList}
             title="Todo"
              updateOwners={updateOwners}
-            showAddButton={true}
+            showAddButton={true} // Hide add button
           />
           <TodoList
             tasks={filterTodos(doing)}
@@ -241,7 +176,7 @@ const AdminKanban: React.FC = () => {
             owners={ownerList}
             title="Doing"
               updateOwners={updateOwners}
-             showAddButton={false}
+              showAddButton={false} // Hide add button
           />
           <TodoList
             tasks={filterTodos(complete)}
@@ -250,18 +185,12 @@ const AdminKanban: React.FC = () => {
             owners={ownerList}
             title="Complete"
               updateOwners={updateOwners}
-             showAddButton={false}
+              showAddButton={false} // Hide add button
           />
         </Grid>
       </DragDropContext>
-        {isAddUserModalOpen && (
-          <AddUserModal
-            handleClose={handleAddUserModalClose}
-            updateUsers={updateUserList}
-          />
-        )}
     </Container>
   );
 };
 
-export default React.memo(AdminKanban);
+export default React.memo(KanbanBoard);

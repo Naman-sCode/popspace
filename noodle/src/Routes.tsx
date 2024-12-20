@@ -13,6 +13,8 @@ import { PromoSlugPage } from './pages/PromoSlugPage';
 import RoomPage from './pages/RoomPage/RoomPage';
 import SignUpPage from './pages/SingUpPage/SignUpPage';
 import LoginPage from './pages/LoginPage/LoginPage';
+import AdminKanban from './pages/KanbanPage/AdminKanban';
+import KanbanBoard from './pages/KanbanPage/KanbanBoard';
 
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
@@ -25,7 +27,12 @@ export const Routes: React.FC<IRoutesProps> = () => {
         <Redirect to={RouteNames.SIGN_IN} />
       </Route>
       <Route exact path={RouteNames.SIGN_IN} component={LoginPage} />
+
       <Route exact path={RouteNames.SIGN_UP} component={SignUpPage} />
+
+      <Route path={RouteNames.ADMIN_KANBAN} component={AdminKanban} />
+
+      <Route path={RouteNames.INTERN_KANBAN} component={KanbanBoard} />
 
       <Route exact path={RouteNames.CREATE_MEETING} component={MeetingSelect} />
 

@@ -1,6 +1,7 @@
 import React, { ReactEventHandler, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Logo from "../../images/logo.svg";
+import { RouteNames } from '@constants/RouteNames';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -9,8 +10,13 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Username:', username, 'Password:', password);
-    history.push('/create');
+    if (username.includes('@mentor') || username.includes('@admin')) {
+      history.push(RouteNames.ADMIN_KANBAN); // Path for mentors
+    } else if (username.includes('@intern')) {
+      history.push(RouteNames.INTERN_KANBAN); // Path for interns
+    } else {
+      alert('Invalid username format. Please include a valid role identifier.');
+    }
   };
   const handleForgotPassword = () => {
     alert('Redirect to Forgot Password functionality.');
