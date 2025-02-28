@@ -19,7 +19,7 @@ interface TodoListProps {
   droppableId: string;
   title: string;
   updateOwners: (tasks: Task[]) => void;
-  showAddButton?: boolean; // Optional prop to control Add Task Button
+  showAddButton?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
